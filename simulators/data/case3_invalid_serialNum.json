@@ -1,0 +1,12 @@
+{
+    "desc": "Pydantic Validation Error (Short Serial Number)",
+    "remote_id": "NKA-Seoul-OLT",
+    "circuit_id": "1-1-1-1",
+    "payload": {
+        "serialNo": "SHORT_SN",
+        "onuModel": "ERR_MODEL",
+        "mode": "BRIDGE",
+        "nwSpeed": "1G",
+        "vlanId": 99
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "desc": "Huawei Equipment Success (1G Router)",
+    "remote_id": "LABC501a-OLT01z",
+    "circuit_id": "0-1-15-33",
+    "payload": {
+        "serialNo": "5A54454706100003",
+        "onuModel": "HG8145V5",
+        "mode": "ROUTER",
+        "nwSpeed": "1G",
+        "vlanId": 20
+    }
+}

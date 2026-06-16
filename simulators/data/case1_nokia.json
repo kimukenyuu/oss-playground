@@ -1,0 +1,12 @@
+{
+    "desc": "Nokia Equipment Success (10G Bridge)",
+    "remote_id": "NKA-Tokyo-OLT",
+    "circuit_id": "1-2-3-4",
+    "payload": {
+        "serialNo": "53434F4D2330006C",
+        "onuModel": "ZF10002",
+        "mode": "BRIDGE",
+        "nwSpeed": "10G",
+        "vlanId": 14
+    }
+}

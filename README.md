@@ -13,39 +13,36 @@ The project is structured as a monorepo, separating the core orchestration logic
 ```text
 oss-playground/
 │
-├── .github/
-│   └── workflows/
-│       └── cicd_pipeline.yml # CI/CD automation pipeline workflow
-│
 ├── oss-core/                 # Main Operations Support System (OSS) Core Engine
 │   ├── app/
-│   │   ├── services/         # Orchestration & Business Logic
-│   │   │   ├── __init__.py
-│   │   │   └── oss_interface.py  # Determines EMS target and orchestrates flow
+│   │   ├── controllers/      # Inbound/Outbound Adapters
+│   │   │   ├── bss_controller.py # FastAPI Router handling incoming HTTP POST requests from BSS
+│   │   │   └── ems_controller.py # Manages outbound TCP socket connections to EMS
 │   │   │
-│   │   ├── decoders/         # Data Translators & Parsers
-│   │   │   ├── __init__.py
-│   │   │   └── tl1_translator.py # Encodes JSON to TL1 format / Decodes raw TL1 to JSON
+│   │   ├── services/         # Core Business Logic
+│   │   │   └── oss_orchestrator.py # Evaluates metadata, determines EMS target, and drives the workflow
 │   │   │
-│   │   ├── receivers/        # Inbound Adapters (Handles external ingress requests)
-│   │   │   ├── __init__.py
-│   │   │   └── http_receiver.py  # FastAPI Router handling HTTP PUT requests
+│   │   ├── translators/      # Data Structure Translators (Encoders/Decoders)
+│   │   │   ├── tl1_encoder.py    # Encodes JSON payload to vendor-specific TL1 commands
+│   │   │   └── tl1_decoder.py    # Parses raw TL1 completion lines into structured JSON
 │   │   │
-│   │   ├── senders/          # Outbound Adapters (Handles egress network operations)
-│   │   │   ├── __init__.py
-│   │   │   └── tcp_sender.py     # Establishes TCP connections to transmit TL1 payloads
+│   │   ├── models/           # Pydantic Schemas
+│   │   │   └── schemas.py    # Request/Response data models
 │   │   │
-│   │   └── main.py           # Application entry point and server initialization
+│   │   └── main.py           # Application entry point and FastAPI server initialization
 │   │
-│   ├── tests/                # Automated integration and unit tests using pytest
-│   └── requirements.txt      # Core backend dependencies (FastAPI, Uvicorn, Pydantic, pytest, httpx, ...)
+│   └── requirements.txt      # Core backend dependencies (FastAPI, Uvicorn, Pydantic, requests...)
 │
 ├── simulators/               # Environment Simulators (Mock Systems)
-│   ├── mock_bss.py           # Simulates BSS Server(Sends HTTP PUT requests to OSS Core)
-│   ├── mock_ems.py           # Simulates EMS Server(Listens on raw TCP socket)
+│   ├── data/                 # JSON payload files for BSS testing
+│   │   ├── case1_nokia.json
+│   │   ├── case2_huawei.json
+│   │   └── case3_invalid_serialNum.json
+│   │
+│   ├── mock_bss.py           # Mock BSS Client (Loads JSON files and sends HTTP requests)
+│   ├── mock_ems.py           # Mock EMS Server (Listens on TCP socket and returns COMPLD)
 │   └── requirements.txt      # Simulator dependencies
-│
-└── run.sh                    # One-click automation shell script to run the entire cluster
+
 ```
 
 
@@ -57,21 +54,21 @@ oss-playground/
 
 Receives and validates the JSON payload against the Pydantic data schemas.
 
-### Orchestration (```services/oss_interface.py```):
+### Orchestration (```services/oss_orchestrator.py```):
 
 Acts as the central controller. It evaluates the equipment metadata, determines the appropriate EMS vendor, and delegates tasks to the translation and transmission layers.
 
-### Translation (```oss-core/app/decoders/tl1_translator.py```):
+### Encoding (```translators/tl1_encoder.py```):
 
-Parses the validated JSON and constructs a corresponding raw TL1 telecommunication command string (e.g., ADD-ONT).
+Parses the validated JSON and constructs a corresponding raw TL1 telecommunication command string (e.g., ENT-ONT).
 
-### Transmission (```oss-core/app/senders/tcp_sender.py```):
+### Transmission (```controllers/ems_controller.py```):
 
 Opens a raw TCP socket connection to mock_ems.py and streams the encoded TL1 payload.
 
-### Response & Egress:
+### Decoding Response & Egress(```translators/tl1_decoder.py```):
 
-mock_ems.py processes the command, returning a raw TL1 text response (COMPLD / DENY). oss-core captures this raw string, transforms it back into a clean, unified JSON receipt, and returns it to mock_bss.py.
+mock_ems.py returns a raw TL1 text response. The decoder parses this text into a unified JSON status map, which the orchestrator packages into a final receipt and sends back to the BSS.
 
 
 

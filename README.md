@@ -19,6 +19,10 @@ oss-playground/
 │
 ├── oss-core/                 # Main Operations Support System (OSS) Core Engine
 │   ├── app/
+│   │   ├── services/         # Orchestration & Business Logic
+│   │   │   ├── __init__.py
+│   │   │   └── oss_interface.py  # Determines EMS target and orchestrates flow
+│   │   │
 │   │   ├── decoders/         # Data Translators & Parsers
 │   │   │   ├── __init__.py
 │   │   │   └── tl1_translator.py # Encodes JSON to TL1 format / Decodes raw TL1 to JSON
@@ -52,6 +56,10 @@ oss-playground/
 ### Reception (```oss-core/app/receivers/http_receiver.py```):
 
 Receives and validates the JSON payload against the Pydantic data schemas.
+
+### Orchestration (```services/oss_interface.py```):
+
+Acts as the central controller. It evaluates the equipment metadata, determines the appropriate EMS vendor, and delegates tasks to the translation and transmission layers.
 
 ### Translation (```oss-core/app/decoders/tl1_translator.py```):
 

@@ -163,17 +163,17 @@ To run the tests, navigate to the `oss-core` directory and execute:
   cd oss-core
   ```
 
-* **Run ALL tests
+* **Run ALL tests**
   ```Bash
   pytest -v
   ```
 
-* **Run ONLY Unit Tests (Extremely fast, no mocking needed)
+* **Run ONLY Unit Tests**
   ```Bash
   pytest tests/unit/ -v
   ```
 
-* **Run ONLY Integration Tests (Tests the full API flow)
+* **Run ONLY Integration Tests (Tests the full API flow)**
   ```Bash
   pytest tests/integration/ -v
   ```

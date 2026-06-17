@@ -159,21 +159,21 @@ If you prefer to run and trace each component manually, open three separate term
 The project includes a comprehensive test suite using `pytest`. The tests are divided into Unit Tests (fast, logic-focused) and Integration Tests (API flow, mocked EMS).
 
 To run the tests, navigate to the `oss-core` directory and execute:
-```Bash
-cd oss-core
-```
+  ```Bash
+  cd oss-core
+  ```
 
-# 1. Run ALL tests
-```Bash
-pytest -v
-```
+* **Run ALL tests
+  ```Bash
+  pytest -v
+  ```
 
-# 2. Run ONLY Unit Tests (Extremely fast, no mocking needed)
-```Bash
-pytest tests/unit/ -v
-```
+* **Run ONLY Unit Tests (Extremely fast, no mocking needed)
+  ```Bash
+  pytest tests/unit/ -v
+  ```
 
-# 3. Run ONLY Integration Tests (Tests the full API flow)
-```Bash
-pytest tests/integration/ -v
-```
+* **Run ONLY Integration Tests (Tests the full API flow)
+  ```Bash
+  pytest tests/integration/ -v
+  ```

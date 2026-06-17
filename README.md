@@ -31,6 +31,10 @@ oss-playground/
 │   │   │
 │   │   └── main.py           # Application entry point and FastAPI server initialization
 │   │
+│   ├── tests/                # Automated Test Suites (Pytest)
+│   │   ├── unit/             # Unit Tests (isolated logic tests, ...)
+│   │   └── integration/      # Integration Tests (API flow tests with EMS mocking, ...)
+│   │
 │   └── requirements.txt      # Core backend dependencies (FastAPI, Uvicorn, Pydantic, requests...)
 │
 ├── simulators/               # Environment Simulators (Mock Systems)
@@ -148,3 +152,28 @@ If you prefer to run and trace each component manually, open three separate term
   ```Bash
   python simulators/mock_bss.py
   ```
+
+<br/><br/><br/><br/>
+## 🧪 Running Tests
+
+The project includes a comprehensive test suite using `pytest`. The tests are divided into Unit Tests (fast, logic-focused) and Integration Tests (API flow, mocked EMS).
+
+To run the tests, navigate to the `oss-core` directory and execute:
+```Bash
+cd oss-core
+```
+
+# 1. Run ALL tests
+```Bash
+pytest -v
+```
+
+# 2. Run ONLY Unit Tests (Extremely fast, no mocking needed)
+```Bash
+pytest tests/unit/ -v
+```
+
+# 3. Run ONLY Integration Tests (Tests the full API flow)
+```Bash
+pytest tests/integration/ -v
+```

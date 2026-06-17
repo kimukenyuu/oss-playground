@@ -1,20 +1,26 @@
 import socket
 import logging
+import os
+from dotenv import load_dotenv
 
 # Setup logger for the sender layer
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+# Load environment variables from .env file (if exists)
+load_dotenv()
 
 class EmsController:
     """
     Handles outbound TCP socket communication to the EMS server.
     Receives TL1 commands, transmits them over the network, and returns the raw string response.
     """
-    def __init__(self, host: str = "127.0.0.1", port: int = 9999):
+    def __init__(self, host: str = None, port: int = None):
         # In a real environment, this IP/Port would be dynamically fetched from the DB (e.g., t_oss_addr_mst).
-        # For this playground, it defaults to the local mock EMS simulator (port 9999).
-        self.host = host
-        self.port = port
+        # For this playground, it defaults to the local mock EMS simulator
+        # if environment variables are not set, 127.0.0.1 and 9999 will be used.
+        self.host = host or os.getenv("TARGET_EMS_HOST", "127.0.0.1")
+        self.port = port or int(os.getenv("TARGET_EMS_PORT", 9999))
 
     def send_tl1_commands(self, commands: list[str]) -> str:
         """

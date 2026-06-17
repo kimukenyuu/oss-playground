@@ -37,5 +37,8 @@ jobs:
 
       - name: Run tests with pytest
         working-directory: ./oss-core
+        env:
+          TARGET_EMS_HOST: ${{ secrets.TARGET_EMS_HOST }}
+          TARGET_EMS_PORT: ${{ secrets.TARGET_EMS_PORT }}
         run: |
           pytest -v

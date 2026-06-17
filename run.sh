@@ -4,6 +4,11 @@
 # OSS Provisioning Cluster One-Click Runner
 # =========================================================================
 
+# install dependencies
+pip install -r simulators/requirements.txt -q
+pip install -r oss-core/requirements.txt -q
+
+
 echo "🚀 Starting OSS Provisioning Cluster..."
 
 # [Cleanup Function for Graceful Shutdown]

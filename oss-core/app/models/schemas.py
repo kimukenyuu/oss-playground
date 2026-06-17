@@ -10,27 +10,27 @@ class OnuProvisioningPayload(BaseModel):
         min_length=16, 
         max_length=16, 
         description="ONU Serial number (16-character hex string)", 
-        example="5A54454706100003"
+        examples=["5A54454706100003"]
     )
     onuModel: str = Field(
         ..., 
         description="ONU device model name", 
-        example="ZF10002"
+        examples=["ZF10002"]
     )
     mode: str = Field(
         ..., 
         description="Service operation mode", 
-        example="BRIDGE"
+        examples=["BRIDGE"]
     )
     nwSpeed: str = Field(
         ..., 
         description="Network line speed", 
-        example="10G"
+        examples=["10G"]
     )
     vlanId: int = Field(
         ..., 
         description="VLAN ID to be allocated", 
-        example=14
+        examples=[14]
     )
 
 
@@ -38,8 +38,8 @@ class OnuProvisioningPayload(BaseModel):
 # 2. OSS -> BSS (Response Data Models)
 # ==========================================
 class OssResponse(BaseModel):
-    errCode: int = Field(..., description="Result code (0: Success, 100+: Error)", example=0)
-    errMsg: str = Field(..., description="Detailed result message", example="Success.")
+    errCode: int = Field(..., description="Result code (0: Success, 100+: Error)", examples=[0])
+    errMsg: str = Field(..., description="Detailed result message", examples=["Success."])
     worthRetrying: str = Field("false", description="Flag indicating if the request is worth retrying")
     
     requestInfo: Optional[Dict[str, Any]] = Field(

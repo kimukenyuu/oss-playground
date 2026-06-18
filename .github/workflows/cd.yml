@@ -3,11 +3,11 @@ name: EC2 Continuous Deployment (Self-Hosted)
 on:
   push:
     branches:
-      - main  # Triggered only when code is pushed to the main branch
+      - main  
 
 jobs:
   deploy:
-    runs-on: self-hosted  # Uses the runner installed inside your EC2
+    runs-on: self-hosted
 
     steps:
       - name: 📥 Checkout Source Code
@@ -17,31 +17,29 @@ jobs:
         run: |
           echo "🚀 Starting deployment inside EC2..."
           
-          # 1. Copy and move files
+          # 1. Copy files to the deployment directory
           mkdir -p /home/ubuntu/oss-playground
           cp -r ./* /home/ubuntu/oss-playground/
           cd /home/ubuntu/oss-playground
           
-          # 2. Install dependencies
-          # Using --upgrade and --no-cache-dir for efficient updates
-          pip3 install --upgrade -r oss-core/requirements.txt --no-cache-dir
-          pip3 install --upgrade -r simulators/requirements.txt --no-cache-dir
-          
-          # 3. Setup virtual environment (optional but recommended for isolation)
+          # 2. Create a virtual environment (Fixes PEP 668 error)
           python3 -m venv venv
-          source venv/bin/activate
           
-          # 4. ⭐️ Terminate all related processes (Uvicorn & EMS)
+          # 3. Install dependencies using the venv's pip directly
+          ./venv/bin/pip install --upgrade pip
+          ./venv/bin/pip install -r oss-core/requirements.txt
+          ./venv/bin/pip install -r simulators/requirements.txt
+          
+          # 4. ⭐️ Terminate existing processes
           echo "🛑 Stopping existing servers and EMS..."
           pkill -f uvicorn || true
           pkill -f mock_ems.py || true
-          # Note: mock_bss.py is intended to be manually started/stopped in the terminal
           
-          # 5. ⭐️ Restart Core server and EMS simulator in the background
-          echo "🟢 Restarting services with the new code..."
+          # 5. ⭐️ Restart services using the virtual environment
+          echo "🟢 Restarting services in virtual environment..."
           
           # Restart EMS (Port 9999)
-          nohup venv/bin/python simulators/mock_ems.py > ems.log 2>&1 &
+          nohup ./venv/bin/python simulators/mock_ems.py > ems.log 2>&1 &
           
           # Restart OSS Server (Port 8000)
           cd oss-core

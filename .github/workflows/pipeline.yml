@@ -63,11 +63,14 @@ jobs:
           ./venv/bin/pip install -r simulators/requirements.txt
           
           # 3. Stop existing services safely
-          pkill -f uvicorn || true
-          pkill -f mock_ems.py || true
+          pkill -f "uvicorn app.main:app" || true
+          pkill -f "python simulators/mock_ems.py" || true
+          sleep 2  # Wait for processes to terminate
           
           # 4. Restart services in the background
           nohup ./venv/bin/python simulators/mock_ems.py > ems.log 2>&1 &
+          sleep 3 # Wait for services to start
           
           cd oss-core
-          nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
+          nohup ../venv/bin/uvicorn app.main:app --app-dir oss-core --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
+          sleep 3 # Wait for services to start

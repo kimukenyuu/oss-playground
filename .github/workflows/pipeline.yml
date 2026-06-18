@@ -55,6 +55,9 @@ jobs:
           mkdir -p /home/ubuntu/oss-playground
           cp -r ./* /home/ubuntu/oss-playground/
           cd /home/ubuntu/oss-playground
+
+          # 1-1. Ensure correct permissions
+          sudo chown -R ubuntu:ubuntu /home/ubuntu/oss-playground
           
           # 2. Setup virtual environment & install packages
           python3 -m venv venv

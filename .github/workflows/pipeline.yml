@@ -75,6 +75,13 @@ jobs:
           sleep 3 # Wait for services to start
           
           cd oss-core
-          nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > /home/ubuntu/oss-playground/oss.log 2>&1 &
+          nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
           sleep 3 # Wait for services to start
-          
+
+          if pgrep -f "uvicorn" > /dev/null; then
+            echo "✅ oss server is running."
+          else
+            echo "❌ oss server failed to start! Check the logs."
+            cat /home/ubuntu/oss-playground/oss.log
+            exit 1
+          fi

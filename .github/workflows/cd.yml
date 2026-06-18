@@ -27,13 +27,17 @@ jobs:
           pip3 install --upgrade -r oss-core/requirements.txt --no-cache-dir
           pip3 install --upgrade -r simulators/requirements.txt --no-cache-dir
           
-          # 3. ⭐️ Terminate all related processes (Uvicorn & EMS)
+          # 3. Setup virtual environment (optional but recommended for isolation)
+          python3 -m venv venv
+          source venv/bin/activate
+          
+          # 4. ⭐️ Terminate all related processes (Uvicorn & EMS)
           echo "🛑 Stopping existing servers and EMS..."
           pkill -f uvicorn || true
           pkill -f mock_ems.py || true
           # Note: mock_bss.py is intended to be manually started/stopped in the terminal
           
-          # 4. ⭐️ Restart Core server and EMS simulator in the background
+          # 5. ⭐️ Restart Core server and EMS simulator in the background
           echo "🟢 Restarting services with the new code..."
           
           # Restart EMS (Port 9999)

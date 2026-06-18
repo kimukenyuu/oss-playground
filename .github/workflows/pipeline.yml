@@ -66,8 +66,8 @@ jobs:
           ./venv/bin/pip install -r simulators/requirements.txt
           
           # 3. Stop existing services safely
-          pkill -f "uvicorn app.main:app" || true
-          pkill -f "python simulators/mock_ems.py" || true
+          sudo fuser -k 8000/tcp || true
+          sudo fuser -k 9999/tcp || true
           sleep 2  # Wait for processes to terminate
           
           # 4. Restart services in the background

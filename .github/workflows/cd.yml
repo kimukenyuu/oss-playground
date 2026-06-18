@@ -1,4 +1,19 @@
-- name: Setup Environment and Restart Servers
+name: EC2 Continuous Deployment (Self-Hosted)
+
+on:
+  push:
+    branches:
+      - main  # Triggered only when code is pushed to the main branch
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # Uses the runner installed inside your EC2
+
+    steps:
+      - name: 📥 Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Setup Environment and Restart Servers
         run: |
           echo "🚀 Starting deployment inside EC2..."
           
@@ -7,15 +22,16 @@
           cp -r ./* /home/ubuntu/oss-playground/
           cd /home/ubuntu/oss-playground
           
-          # 2. Install dependencies(upgrade to ensure latest code changes are reflected)
-          pip3 install -r oss-core/requirements.txt --upgrade
-          pip3 install -r simulators/requirements.txt --upgrade
+          # 2. Install dependencies
+          # Using --upgrade and --no-cache-dir for efficient updates
+          pip3 install --upgrade -r oss-core/requirements.txt --no-cache-dir
+          pip3 install --upgrade -r simulators/requirements.txt --no-cache-dir
           
           # 3. ⭐️ Terminate all related processes (Uvicorn & EMS)
           echo "🛑 Stopping existing servers and EMS..."
           pkill -f uvicorn || true
           pkill -f mock_ems.py || true
-          # (mock_bss.py is intended to be manually started/stopped in the terminal, so leave it alone)
+          # Note: mock_bss.py is intended to be manually started/stopped in the terminal
           
           # 4. ⭐️ Restart Core server and EMS simulator in the background
           echo "🟢 Restarting services with the new code..."

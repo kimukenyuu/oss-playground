@@ -107,7 +107,7 @@ The test simulators run on a minimal dependency environment:
 Python 3.10 or higher
 <br/>
 
-### Quick Start with Shell Script (Recommended)
+### Quick Start with Shell Script in a Local Environment (Recommended)
 You can automatically spin up the entire cluster (install dependencies, launch mock systems, run tests, and perform a clean shutdown) using the automated script:
 
   ```Bash

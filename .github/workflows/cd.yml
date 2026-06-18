@@ -41,10 +41,10 @@ jobs:
           echo "🟢 Restarting services with the new code..."
           
           # Restart EMS (Port 9999)
-          nohup python3 simulators/mock_ems.py > ems.log 2>&1 &
+          nohup venv/bin/python simulators/mock_ems.py > ems.log 2>&1 &
           
           # Restart OSS Server (Port 8000)
           cd oss-core
-          nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
+          nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
           
           echo "✅ Deployment completed successfully!"

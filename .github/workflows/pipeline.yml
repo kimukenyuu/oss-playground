@@ -71,5 +71,7 @@ jobs:
           nohup ./venv/bin/python simulators/mock_ems.py > ems.log 2>&1 &
           sleep 3 # Wait for services to start
           
-          PYTHONPATH=oss-core nohup ./venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
+          cd oss-core
+          PYTHONPATH=. nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
+          cd ..
           sleep 3 # Wait for services to start

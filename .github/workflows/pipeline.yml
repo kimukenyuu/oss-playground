@@ -78,15 +78,5 @@ jobs:
           setsid ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
           sleep 3 # Wait for services to start
 
-          echo "========================================"
-          echo "🚨 포트가 안 뜬다면 왜 죽었는지 로그를 확인합시다 🚨"
-          echo "[EMS 시뮬레이터 로그]"
-          cat ../ems.log || cat ems.log || echo "EMS 로그 파일이 없습니다."
-          
-          echo "----------------------------------------"
-          echo "[OSS 서버 로그]"
-          cat ../oss.log || cat oss.log || echo "OSS 로그 파일이 없습니다."
-          echo "========================================"
-          
-          # 포트 다시 확인
+          # 5. Verify that services are running
           ss -tlnp | grep -E ":8000|:9999" || true

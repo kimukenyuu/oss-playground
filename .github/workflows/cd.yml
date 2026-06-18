@@ -1,0 +1,30 @@
+- name: Setup Environment and Restart Servers
+        run: |
+          echo "🚀 Starting deployment inside EC2..."
+          
+          # 1. Copy and move files
+          mkdir -p /home/ubuntu/oss-playground
+          cp -r ./* /home/ubuntu/oss-playground/
+          cd /home/ubuntu/oss-playground
+          
+          # 2. Install dependencies(upgrade to ensure latest code changes are reflected)
+          pip3 install -r oss-core/requirements.txt --upgrade
+          pip3 install -r simulators/requirements.txt --upgrade
+          
+          # 3. ⭐️ Terminate all related processes (Uvicorn & EMS)
+          echo "🛑 Stopping existing servers and EMS..."
+          pkill -f uvicorn || true
+          pkill -f mock_ems.py || true
+          # (mock_bss.py is intended to be manually started/stopped in the terminal, so leave it alone)
+          
+          # 4. ⭐️ Restart Core server and EMS simulator in the background
+          echo "🟢 Restarting services with the new code..."
+          
+          # Restart EMS (Port 9999)
+          nohup python3 simulators/mock_ems.py > ems.log 2>&1 &
+          
+          # Restart OSS Server (Port 8000)
+          cd oss-core
+          nohup uvicorn app.main:app --host 0.0.0.0 --port 8000 > ../oss.log 2>&1 &
+          
+          echo "✅ Deployment completed successfully!"

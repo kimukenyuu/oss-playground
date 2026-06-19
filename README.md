@@ -54,7 +54,7 @@ oss-playground/
 ## 🔄 Provisioning Data Flow
 
 
-### Reception (```oss-core/app/receivers/http_receiver.py```):
+### Reception (```controllers/bss_controller.py```):
 
 Receives and validates the JSON payload against the Pydantic data schemas.
 

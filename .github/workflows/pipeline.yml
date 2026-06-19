@@ -41,39 +41,40 @@ jobs:
         run: |
           pytest -v
 
-  cd-deploy:
-    needs: ci-test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: self-hosted
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# Temporarily disabled due to the EC2 instance being stopped
+#   cd-deploy:
+#     needs: ci-test
+#     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+#     runs-on: self-hosted
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Deploy to EC2
-        run: |
-          # 1. Copy files to target directory
-          mkdir -p /home/ubuntu/oss-playground
-          cp -r ./* /home/ubuntu/oss-playground/
-          cd /home/ubuntu/oss-playground
+#       - name: Deploy to EC2
+#         run: |
+#           # 1. Copy files to target directory
+#           mkdir -p /home/ubuntu/oss-playground
+#           cp -r ./* /home/ubuntu/oss-playground/
+#           cd /home/ubuntu/oss-playground
 
-          # 1-1. Ensure correct permissions
-          sudo chown -R ubuntu:ubuntu /home/ubuntu/oss-playground
+#           # 1-1. Ensure correct permissions
+#           sudo chown -R ubuntu:ubuntu /home/ubuntu/oss-playground
           
-          # 2. Setup virtual environment & install packages
-          python3 -m venv venv
-          ./venv/bin/pip install --upgrade pip
-          ./venv/bin/pip install -r oss-core/requirements.txt
-          ./venv/bin/pip install -r simulators/requirements.txt
+#           # 2. Setup virtual environment & install packages
+#           python3 -m venv venv
+#           ./venv/bin/pip install --upgrade pip
+#           ./venv/bin/pip install -r oss-core/requirements.txt
+#           ./venv/bin/pip install -r simulators/requirements.txt
           
-          # 3. Stop existing services safely
-          sudo fuser -k 8000/tcp || true
-          sudo fuser -k 9999/tcp || true
-          sleep 2  # Wait for processes to terminate
+#           # 3. Stop existing services safely
+#           sudo fuser -k 8000/tcp || true
+#           sudo fuser -k 9999/tcp || true
+#           sleep 2  # Wait for processes to terminate
           
-          # 4. Restart services in the background
-          RUNNER_TRACKING_ID="" nohup ./venv/bin/python simulators/mock_ems.py < /dev/null > ems.log 2>&1 &
-          sleep 3
+#           # 4. Restart services in the background
+#           RUNNER_TRACKING_ID="" nohup ./venv/bin/python simulators/mock_ems.py < /dev/null > ems.log 2>&1 &
+#           sleep 3
 
-          cd oss-core
-          RUNNER_TRACKING_ID="" nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 < /dev/null > ../oss.log 2>&1 &
-          sleep 3
+#           cd oss-core
+#           RUNNER_TRACKING_ID="" nohup ../venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000 < /dev/null > ../oss.log 2>&1 &
+#           sleep 3
